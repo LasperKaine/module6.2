@@ -1,0 +1,54 @@
+.root, .currency-view {
+    -fx-font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(#f7f9fb, #eef3f8);
+}
+
+.instructions {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 6 0;
+}
+
+.currency-grid {
+    -fx-background-color: white;
+    -fx-padding: 12;
+    -fx-border-color: #d6dbe0;
+    -fx-border-width: 1;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.currency-grid Label {
+    -fx-text-fill: #222222;
+    -fx-font-weight: 600;
+}
+
+#amount-field, #result-field, .combo-box, .combo-box .arrow-button {
+    -fx-pref-width: 220px;
+}
+
+#amount-field, #result-field, .combo-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cdd6df;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.primary-button {
+    -fx-background-color: linear-gradient(#5aa0ff, #3178e8);
+    -fx-text-fill: white;
+    -fx-font-weight: 600;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 6;
+}
+
+.primary-button:hover {
+    -fx-background-color: linear-gradient(#6bb2ff, #3c8ff0);
+}
+
+.message-label {
+    -fx-text-fill: #b00020;
+    -fx-padding: 6 0 0 0;
+}
+
