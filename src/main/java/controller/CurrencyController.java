@@ -1,35 +1,41 @@
 package controller;
 
+import dao.CurrencyDao;
+import entity.Currency;
 import view.CurrencyView;
-import model.Currency;
-import model.CurrencyModel;
+
+import java.sql.SQLException;
+import java.util.List;
 
 public class CurrencyController {
 
-    private final CurrencyModel model;
+    private final CurrencyDao dao;
     private final CurrencyView view;
 
-    public CurrencyController(CurrencyModel model, CurrencyView view) {
-        this.model = model;
+    public CurrencyController(CurrencyView view) {
+        this.dao = new CurrencyDao();
         this.view = view;
 
-        createCurrencies();
         initialize();
     }
 
-    private void createCurrencies() {
-        model.addCurrency(new Currency("USD", "US Dollar", 1.0));
-        model.addCurrency(new Currency("EUR", "Euro", 0.85));
-        model.addCurrency(new Currency("GBP", "British Pound", 0.74));
-        model.addCurrency(new Currency("JPY", "Japanese Yen", 156.08));
+    private void loadCurrencies() {
+        view.getFromBox().getItems().clear();
+        view.getToBox().getItems().clear();
+
+        try {
+            List<Currency> currencies = dao.getAllCurrencies();
+            view.getFromBox().getItems().addAll(currencies);
+            view.getToBox().getItems().addAll(currencies);
+            view.getMessageLabel().setText("");
+        } catch (SQLException e) {
+            view.getMessageLabel().setText("Error: Could not connect to the database.");
+        }
     }
 
     private void initialize() {
+        loadCurrencies();
 
-        view.getFromBox().getItems().addAll(model.getCurrencies());
-        view.getToBox().getItems().addAll(model.getCurrencies());
-
-        // Prevent letters in amount field
         view.getAmountField().textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*(\\.\\d*)?")) {
                 view.getAmountField().setText(oldVal);
@@ -40,9 +46,7 @@ public class CurrencyController {
     }
 
     private void convert() {
-
         try {
-
             if (view.getAmountField().getText().isEmpty()) {
                 throw new IllegalArgumentException("Please enter an amount.");
             }
@@ -56,15 +60,19 @@ public class CurrencyController {
                 throw new IllegalArgumentException("Please select both currencies.");
             }
 
-            // Convert via USD
-            double amountInUSD = amount / from.getRateToUSD();
-            double result = amountInUSD * to.getRateToUSD();
+            double fromRate = dao.getExchangeRate(from.getAbbreviation());
+            double toRate = dao.getExchangeRate(to.getAbbreviation());
+
+            double amountInUSD = amount / fromRate;
+            double result = amountInUSD * toRate;
 
             view.getResultField().setText(String.format("%.2f", result));
             view.getMessageLabel().setText("");
 
-        } catch (Exception ex) {
-            view.getMessageLabel().setText("Error: " + ex.getMessage());
+        } catch (SQLException e) {
+            view.getMessageLabel().setText("Error: Could not connect to the database.");
+        } catch (IllegalArgumentException e) {
+            view.getMessageLabel().setText("Error: " + e.getMessage());
         }
     }
 }

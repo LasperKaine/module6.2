@@ -1,6 +1,6 @@
 package view;
 
-import model.Currency;
+import entity.Currency;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -64,8 +64,6 @@ public class CurrencyView extends VBox {
         toBox.setId("to-box");
         convertButton.getStyleClass().add("primary-button");
         messageLabel.getStyleClass().add("message-label");
-
-        // Small sensible prompts
         amountField.setPromptText("0.00");
         resultField.setPromptText("--");
     }
@@ -77,7 +75,6 @@ public class CurrencyView extends VBox {
     public Button getConvertButton() { return convertButton; }
     public Label getMessageLabel() { return messageLabel; }
 
-    // Convenience shim so older code that calls `CurrencyView.launch(CurrencyView.class)` works.
     public static void launch(Class<?> ignored, String... args) {
         Application.launch(CurrencyViewApp.class, args);
     }
