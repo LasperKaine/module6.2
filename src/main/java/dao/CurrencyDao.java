@@ -1,50 +1,35 @@
 package dao;
 
-import datasource.MariaDbConnection;
+import datasource.MariaDbJpaConnection;
 import entity.Currency;
-
-import java.sql.*;
-import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public class CurrencyDao {
 
-    public double getExchangeRate(String abbreviation) throws SQLException {
-        String sql = "SELECT rate_to_usd FROM currency WHERE abbreviation = ?";
-
-        try (Connection conn = MariaDbConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, abbreviation);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble("rate_to_usd");
-                } else {
-                    throw new SQLException("Currency not found: " + abbreviation);
-                }
-            }
-        }
+    public List<Currency> getAllCurrencies() {
+        EntityManager em = MariaDbJpaConnection.getInstance();
+        return em.createQuery("SELECT c FROM Currency c", Currency.class)
+                .getResultList();
     }
 
-    public List<Currency> getAllCurrencies() throws SQLException {
-        List<Currency> currencies = new ArrayList<>();
-        String sql = "SELECT id, abbreviation, name, rate_to_usd FROM currency";
+    public double getExchangeRate(String abbreviation) {
+        EntityManager em = MariaDbJpaConnection.getInstance();
 
-        try (Connection conn = MariaDbConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+        Currency currency = em.createQuery(
+                        "SELECT c FROM Currency c WHERE c.abbreviation = :abbr",
+                        Currency.class)
+                .setParameter("abbr", abbreviation)
+                .getSingleResult();
 
-            while (rs.next()) {
-                currencies.add(new Currency(
-                        rs.getInt("id"),
-                        rs.getString("abbreviation"),
-                        rs.getString("name"),
-                        rs.getDouble("rate_to_usd")
-                ));
-            }
-        }
-        return currencies;
+        return currency.getRateToUSD();
+    }
+
+    public void insertCurrency(Currency currency) {
+        EntityManager em = MariaDbJpaConnection.getInstance();
+
+        em.getTransaction().begin();
+        em.persist(currency);
+        em.getTransaction().commit();
     }
 }
-

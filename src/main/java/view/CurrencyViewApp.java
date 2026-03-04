@@ -11,7 +11,7 @@ public class CurrencyViewApp extends Application {
         CurrencyView view = new CurrencyView();
         new controller.CurrencyController(view);
 
-        Scene scene = new Scene(view, 520, 380);
+        Scene scene = new Scene(view, 520, 430);
         String css = getClass().getResource("/styles.css").toExternalForm();
         scene.getStylesheets().add(css);
 
@@ -20,7 +20,4 @@ public class CurrencyViewApp extends Application {
         stage.show();
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

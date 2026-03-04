@@ -16,9 +16,9 @@ public class CurrencyView extends VBox {
     private final ComboBox<Currency> toBox = new ComboBox<>();
     private final Button convertButton = new Button("Convert");
     private final Label messageLabel = new Label();
+    private final Button addCurrencyButton = new Button("Add Currency");
 
     public CurrencyView() {
-        // Set semantic style class for root and spacing
         getStyleClass().add("currency-view");
         setSpacing(15);
         setPadding(new Insets(20));
@@ -54,6 +54,8 @@ public class CurrencyView extends VBox {
 
         grid.add(convertButton, 1, 4);
 
+        grid.add(addCurrencyButton, 1, 5);
+
         getChildren().addAll(instructions, grid, messageLabel);
     }
 
@@ -74,6 +76,7 @@ public class CurrencyView extends VBox {
     public ComboBox<Currency> getToBox() { return toBox; }
     public Button getConvertButton() { return convertButton; }
     public Label getMessageLabel() { return messageLabel; }
+    public Button getAddCurrencyButton() { return addCurrencyButton; }
 
     public static void launch(Class<?> ignored, String... args) {
         Application.launch(CurrencyViewApp.class, args);
